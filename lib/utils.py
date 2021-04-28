@@ -37,3 +37,23 @@ def isin_to_ticker(isin):
         return yf.Ticker(symbol)
     else:
         return None
+
+
+def pretty_portfolio_description(isins):
+    pretty_description = "# Companies\n\n"
+    for isin in isins:
+        ticker = isin_to_ticker(isin)
+        pretty_description += "###" + str(isin)
+        if ticker is not None:
+            info = ticker.info
+            if 'sector' in info.keys():
+                pretty_description += ' - Sector: ' + str(info['sector']) + "\n"
+            else:
+                pretty_description += "\n"
+            if 'longBusinessSummary' in info.keys():
+                description = info['longBusinessSummary']
+                as_lines = [description[i:i + 100] for i in range(0, len(description), 100)]
+                for line in as_lines:
+                    pretty_description += line + "\n"
+        pretty_description += "\n\n"
+    return pretty_description
